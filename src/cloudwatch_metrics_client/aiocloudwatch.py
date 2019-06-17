@@ -25,8 +25,14 @@ class CloudWatchAsyncMetrics:
         return cls
 
     @classmethod
+    def with_client(cls, client):
+        cls.client = client
+        return cls
+
+    @classmethod
     def setup_client(cls):
-        cls.client = aioboto3.client('cloudwatch.py')
+        if cls.client is None:
+            cls.client = aioboto3.client('cloudwatch')
         return cls
 
     @classmethod
@@ -54,6 +60,7 @@ class CloudWatchAsyncMetrics:
         try:
             if metric_data.get('Timestamp') is None:
                 metric_data['Timestamp'] = datetime.datetime.now()
+            cls.setup_client()
             return await cls.client.put_metric_data(
                 Namespace=cls.namespace,
                 MetricData=[{**metric_data}]
@@ -92,7 +99,8 @@ class CloudWatchAsyncMetrics:
             start = datetime.datetime.now()
             yield
             elapsed = datetime.datetime.now() - start
-            await cls.put_statistic(name=name, dimensions=cls.dimensions, value=elapsed.microseconds, unit='Microseconds')
+            await cls.put_statistic(
+                name=name, dimensions=cls.dimensions, value=elapsed.microseconds, unit='Microseconds')
             cls.dimensions = previous_dimensions
 
         @functools.wraps(func)
@@ -169,17 +177,10 @@ class CloudWatchAsyncMetricReporter:
                     return
                 self.sleep_task = asyncio.create_task(asyncio.sleep(self.report_interval))
                 try:
-                    sleep_start = datetime.datetime.now()
                     await self.sleep_task
-                    slept = datetime.datetime.now() - sleep_start
-                    log.debug('slept {} microseconds'.format(slept))
                 except asyncio.CancelledError:
                     log.debug('sleep cancelled; reporter stopped')
                     return
-
-                if CloudWatchAsyncMetrics.client is None:
-                    CloudWatchAsyncMetrics.setup_client()
-                    log.debug('Configured CloudWatch client')
                 if len(self.metrics) + len(self.statistics) == 0:
                     log.debug('nothing to report')
                     continue
@@ -198,6 +199,7 @@ class CloudWatchAsyncMetricReporter:
         return list(filter(None.__ne__, metrics))
 
     async def _report(self):
+        CloudWatchAsyncMetrics.setup_client()
         async with self.lock:
             num_metrics = len(self.metrics) + len(self.statistics)
             metric_data = self._calculate_metrics() + self._calculate_statistics()

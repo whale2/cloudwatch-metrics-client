@@ -16,7 +16,8 @@ class CloudWatchSyncMetrics(CloudWatchAsyncMetrics):
 
     @classmethod
     def setup_client(cls):
-        cls.client = boto3.client('cloudwatch')
+        if cls.client is None:
+            cls.client = boto3.client('cloudwatch')
         return cls
 
     @classmethod
@@ -39,6 +40,7 @@ class CloudWatchSyncMetrics(CloudWatchAsyncMetrics):
         try:
             if metric_data.get('Timestamp') is None:
                 metric_data['Timestamp'] = datetime.datetime.now()
+            cls.setup_client()
             return cls.client.put_metric_data(
                 Namespace=cls.namespace,
                 MetricData=[{**metric_data}]
@@ -126,10 +128,6 @@ class CloudWatchSyncMetricReporter:
                 if self.stopped:
                     log.debug('reporter stopped')
                     return
-
-                if CloudWatchSyncMetrics.client is None:
-                    CloudWatchSyncMetrics.setup_client()
-                    log.debug('Configured CloudWatch client')
                 if len(self.metrics) + len(self.statistics) == 0:
                     log.debug('nothing to report')
                     continue
@@ -148,6 +146,7 @@ class CloudWatchSyncMetricReporter:
         return list(filter(None.__ne__, metrics))
 
     def _report(self):
+        CloudWatchSyncMetrics.setup_client()
         with self.lock:
             num_metrics = len(self.metrics) + len(self.statistics)
             metric_data = self._calculate_metrics() + self._calculate_statistics()

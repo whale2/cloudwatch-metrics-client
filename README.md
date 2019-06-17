@@ -23,6 +23,7 @@ async def setup():
   
   reporter = CloudWatchAsyncMetricReporter(report_interval=REPORT INTERVAL)        # seconds
   CloudWatchAsyncMetrics.with_namespace('<YOUR NAMESPACE').with_reporter(reporter)
+  # .with_client(aioboto3_cloudwatch_client) is you're not happy with default client
   await reporter.run()
   
   
