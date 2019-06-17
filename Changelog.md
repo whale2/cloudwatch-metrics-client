@@ -1,3 +1,7 @@
+## 0.0.5 (2019-06-17)
+
+- Import aioboto3 lazily
+
 ## 0.0.4 (2019-06-17)
 
 - Add support for Python 3.6 (of sorts)

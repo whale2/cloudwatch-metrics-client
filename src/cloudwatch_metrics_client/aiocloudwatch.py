@@ -14,8 +14,6 @@ except ImportError:
     from async_generator import asynccontextmanager
 
 
-import aioboto3
-
 log = logging.getLogger(__name__.split('.')[0])
 
 
@@ -39,6 +37,7 @@ class CloudWatchAsyncMetrics:
     @classmethod
     def setup_client(cls):
         if cls.client is None:
+            import aioboto3
             cls.client = aioboto3.client('cloudwatch')
         return cls
 
