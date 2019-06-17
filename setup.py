@@ -7,7 +7,7 @@ with open('README.md', 'r') as readme_fd:
     long_description = readme_fd.read()
 
 setup(
-    name='async-cloudwatch.py-metrics-client',
+    name='cloudwatch-metrics-client',
     version=version,
     description='Asynchronous (and synchronous) Python client for AWS CloudWatch metrics',
     long_description=long_description,

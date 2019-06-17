@@ -5,6 +5,7 @@ This is yet another Python CloudWatch client. While there are alternatives, they
 either not supporting asyncio or not actively maintained.
 
 https://github.com/awslabs/cloudwatch-fluent-metrics
+
 https://github.com/peterdemin/awsme
 
 The client collects whatever metrics you feed it with and reports to CloudWatch regularly, though
