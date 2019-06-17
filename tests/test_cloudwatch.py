@@ -5,7 +5,7 @@ import boto3
 from unittest import TestCase
 from mock import MagicMock
 
-from src.cloudwatch import CloudWatchSyncMetrics, CloudWatchSyncMetricReporter
+from src.cloudwatch_metrics_client.cloudwatch import CloudWatchSyncMetrics, CloudWatchSyncMetricReporter
 
 
 class TestCloudwatch(TestCase):

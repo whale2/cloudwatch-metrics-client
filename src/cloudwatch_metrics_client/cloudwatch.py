@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 import boto3
 
-from aiocloudwatch import CloudWatchAsyncMetrics, Metric, MetricSeries, StatisticSeries
+from cloudwatch_metrics_client.aiocloudwatch import CloudWatchAsyncMetrics, Metric, MetricSeries, StatisticSeries
 
 log = logging.getLogger(__name__.split('.')[0])
 

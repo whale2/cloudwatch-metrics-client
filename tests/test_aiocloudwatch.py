@@ -6,7 +6,7 @@ import aioboto3
 from unittest import TestCase
 from mock import MagicMock
 
-from src.aiocloudwatch import CloudWatchAsyncMetrics, CloudWatchAsyncMetricReporter, MetricDimension, Metric, \
+from src.cloudwatch_metrics_client.aiocloudwatch import CloudWatchAsyncMetrics, CloudWatchAsyncMetricReporter, MetricDimension, Metric, \
     MetricSeries, StatisticSeries
 
 
