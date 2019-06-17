@@ -1,3 +1,7 @@
+## 0.0.4 (2019-06-17)
+
+- Add support for Python 3.6 (of sorts)
+
 ## 0.0.3 (2019-06-17)
 
 - Fix setting client

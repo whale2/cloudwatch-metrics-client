@@ -11,7 +11,8 @@ https://github.com/peterdemin/awsme
 The client collects whatever metrics you feed it with and reports to CloudWatch regularly, though
 you can use it for ad-hoc reporting as well
 
-NOTE: aioboto3 is not in the requirements, in case you only need sync version
+NOTE: aioboto3 is not in the requirements, in case you only need sync version. If running under Python 3.6, you'll
+need async_generator>=1.10 as well
 
 Usage:
 

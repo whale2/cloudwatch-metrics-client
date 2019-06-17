@@ -4,8 +4,15 @@ import functools
 import logging
 import math
 from collections import OrderedDict
-from contextlib import contextmanager, asynccontextmanager
 from typing import Union
+from contextlib import contextmanager
+
+# Support for 3.6, for now add dependency manually
+try:
+    from contextlib import asynccontextmanager
+except ImportError:
+    from async_generator import asynccontextmanager
+
 
 import aioboto3
 
