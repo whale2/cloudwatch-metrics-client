@@ -15,7 +15,7 @@ except ImportError:
 
 
 log = logging.getLogger(__name__.split('.')[0])
-
+log.setLevel(logging.INFO)
 
 class CloudWatchAsyncMetrics:
 
@@ -23,6 +23,7 @@ class CloudWatchAsyncMetrics:
     client = None
     namespace = None
     reporter = None
+    debug_level = 0
 
     @classmethod
     def with_namespace(cls, namespace):
@@ -44,6 +45,13 @@ class CloudWatchAsyncMetrics:
     @classmethod
     def with_reporter(cls, reporter):
         cls.reporter = reporter
+        return cls
+
+    @classmethod
+    def with_debug_level(cls, level):
+        cls.debug_level = level
+        if level > 0:
+            log.setLevel(logging.DEBUG)
         return cls
 
     @classmethod
@@ -210,6 +218,11 @@ class CloudWatchAsyncMetricReporter:
             num_metrics = len(self.metrics) + len(self.statistics)
             metric_data = self._calculate_metrics() + self._calculate_statistics()
             for n in range(math.ceil(len(metric_data) / CloudWatchAsyncMetricReporter.MAX_METRICS_PER_REPORT)):
+                if CloudWatchAsyncMetrics.debug_level > 1:
+                    log.debug('Namespace: {})'.format(CloudWatchAsyncMetrics.namespace))
+                    log.debug('Metric data: {}'.format(
+                        metric_data[n * CloudWatchAsyncMetricReporter.MAX_METRICS_PER_REPORT:
+                                           (n + 1) * CloudWatchAsyncMetricReporter.MAX_METRICS_PER_REPORT]))
                 response = await CloudWatchAsyncMetrics.client.put_metric_data(
                     Namespace=CloudWatchAsyncMetrics.namespace,
                     MetricData=metric_data[n * CloudWatchAsyncMetricReporter.MAX_METRICS_PER_REPORT:

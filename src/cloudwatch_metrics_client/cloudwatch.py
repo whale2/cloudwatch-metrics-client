@@ -151,8 +151,13 @@ class CloudWatchSyncMetricReporter:
             num_metrics = len(self.metrics) + len(self.statistics)
             metric_data = self._calculate_metrics() + self._calculate_statistics()
             for n in range(math.ceil(len(metric_data) / CloudWatchSyncMetricReporter.MAX_METRICS_PER_REPORT)):
+                if CloudWatchSyncMetrics.debug_level > 1:
+                    log.debug('Namespace: {}'.format(CloudWatchSyncMetrics.namespace))
+                    log.debug('Metric data: {}'.format(
+                        metric_data[n * CloudWatchSyncMetricReporter.MAX_METRICS_PER_REPORT:
+                                           (n + 1) * CloudWatchSyncMetricReporter.MAX_METRICS_PER_REPORT]))
                 response = CloudWatchSyncMetrics.client.put_metric_data(
-                    Namespace=CloudWatchAsyncMetrics.namespace,
+                    Namespace=CloudWatchSyncMetrics.namespace,
                     MetricData=metric_data[n * CloudWatchSyncMetricReporter.MAX_METRICS_PER_REPORT:
                                            (n + 1) * CloudWatchSyncMetricReporter.MAX_METRICS_PER_REPORT]
                 )

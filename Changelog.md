@@ -1,3 +1,8 @@
+## 0.0.6 (2019-06-20)
+
+- Add debug level setting
+- Fix Namespace parameter
+
 ## 0.0.5 (2019-06-17)
 
 - Import aioboto3 lazily
